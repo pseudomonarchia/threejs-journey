@@ -5,46 +5,39 @@ import {
   Mesh,
   PerspectiveCamera,
   WebGLRenderer,
-  AxesHelper,
-  Vector3,
+  Clock
 } from 'three'
 
 /**
  * ---
  */
+const sizes = { w: 800, h: 600 }
 const scene = new Scene()
 const geometry = new BoxGeometry(1, 1, 1)
 const material = new MeshBasicMaterial({ color: 0xff0000 })
 const cube = new Mesh(geometry, material)
-
-cube.position.x = 0.7
-cube.position.y = -0.6
-cube.position.z = 1
-
-// cube.scale.x = 2
-// cube.scale.y = 0.25
-// cube.scale.z = 0.5
-
-// cube.rotation.x = Math.PI * 0.25
-// cube.rotation.y = Math.PI * 0.25
 scene.add(cube)
 
-const camera = new PerspectiveCamera(75, 800 / 600)
+const camera = new PerspectiveCamera(75, sizes.w / sizes.h)
 camera.position.z = 3
-camera.position.x = 1
-camera.position.y = 1
-camera.lookAt(new Vector3(0, 0, 0))
 
 scene.add(camera)
 
-/**
- * Axes
- */
-const axesHelper = new AxesHelper(2)
-scene.add(axesHelper)
-
 const renderer = new WebGLRenderer()
-renderer.setSize(800, 600)
-renderer.render(scene, camera)
+renderer.setSize(sizes.w, sizes.h)
+
+const clock = new Clock()
+
+function tick() {
+  const elapsedTime = clock.getElapsedTime()
+  camera.position.x = Math.cos(elapsedTime)
+  camera.position.y = Math.sin(elapsedTime)
+  camera.lookAt(cube.position)
+
+  renderer.render(scene, camera)
+  window.requestAnimationFrame(tick)
+}
+
+tick()
 
 document.body.appendChild(renderer.domElement)
