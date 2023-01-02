@@ -5,7 +5,6 @@ import {
   Mesh,
   PerspectiveCamera,
   WebGLRenderer,
-  Clock
 } from 'three'
 
 /**
@@ -26,12 +25,15 @@ scene.add(camera)
 const renderer = new WebGLRenderer()
 renderer.setSize(sizes.w, sizes.h)
 
-const clock = new Clock()
+const cursor = { x: 0, y: 0 }
+window.addEventListener('mousemove', e => {
+  cursor.x = e.clientX / sizes.w - 0.5
+  cursor.y = - (e.clientY / sizes.h - 0.5)
+})
 
 function tick() {
-  const elapsedTime = clock.getElapsedTime()
-  camera.position.x = Math.cos(elapsedTime)
-  camera.position.y = Math.sin(elapsedTime)
+  camera.position.x = cursor.x * 5
+  camera.position.y = cursor.y * 5
   camera.lookAt(cube.position)
 
   renderer.render(scene, camera)
